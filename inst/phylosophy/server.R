@@ -18,8 +18,6 @@ shinyServer(function(input, output, session) {
     )
     nameFullDf <- data.table::fread(nameFullFile, select = c(1:3))
     
-    # DCC download oma app
-    callModule(dccDownloadOmaApp, "dccDownloadOma")
     # DCC app
     callModule(dccApp, "dccApp")
     
@@ -29,14 +27,14 @@ shinyServer(function(input, output, session) {
     # FAS app
     callModule(fasApp, "fasApp")
     
-    # hamstrPrepare app
-    callModule(hamstrPrepareApp, "hamstrPrepareApp", nameFullDf)
+    # fdogAddTaxa app
+    callModule(fdogAddTaxaApp, "fdogAddTaxaApp", nameFullDf)
 	
-	# HaMStR app
-	hamstrOut <- callModule(hamstrApp, "hamstrApp", nameFullDf)
-	
+	# fDOG app
+	fdogOut <- callModule(fdogApp, "fdogApp", nameFullDf)
+
 	# PhyloProfile lite
-	callModule(phyloprofileLite, "phyloprofileLite", hamstrOut)
+	callModule(phyloprofileLite, "phyloprofileLite", fdogOut)
 	
 	# PhyloProfile full
 	callModule(phyloprofileFull, "phyloprofileFull")

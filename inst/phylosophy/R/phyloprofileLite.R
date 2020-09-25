@@ -635,6 +635,12 @@ phyloprofileLite <- function(input, output, session, hamstrOut) {
         })
     })
     
+    # * count taxa for each supertaxon -----------------------------------------
+    getCountTaxa <- reactive({
+        taxaCount <- plyr::count(sortedtaxaList(), "supertaxon")
+        return(taxaCount)
+    })
+    
     # get subset data (default: first 30 genes) for plotting -----------------
     preData <- reactive({
         req(v$doPlot)
@@ -656,18 +662,19 @@ phyloprofileLite <- function(input, output, session, hamstrOut) {
         })
     })
     
-    # creating main dataframe for subset taxa (in species/strain level) ------
-    # get (super)taxa names (1)
-    # calculate percentage of presence (2),
-    # max/min/mean/median VAR1 (3) and VAR2 (4)
-    getDataFiltered <- reactive({
+    # * creating main dataframe for subset taxa (in species/strain level) ------
+    # * get (super)taxa names
+    # * max/min/mean/median VAR1 and VAR2
+    getFullData <- reactive({
         req(v$doPlot)
         req(preData())
+        req(getCountTaxa())
         req(sortedtaxaList())
         withProgress(message = 'Parsing profile data...', value = 0.5, {
             fullMdData <- parseInfoProfile(
                 inputDf = preData(),
                 sortedInputTaxa = sortedtaxaList(),
+                taxaCount = getCountTaxa(),
                 var1AggregateBy = "max",
                 var2AggregateBy = "max"
             )
@@ -675,19 +682,7 @@ phyloprofileLite <- function(input, output, session, hamstrOut) {
         })
     })
     
-    # reduce data from lowest level to supertaxon (e.g. phylum) --------------
-    # This data set contain only supertaxa
-    # and their value (%present, mVar1 & mVar2) for each gene
-    dataSupertaxa <- reactive({
-        req(v$doPlot)
-        fullMdData <- getDataFiltered()
-        withProgress(message = 'Reducing to supertaxon...', value = 0.5, {
-            superDfExt <- reduceProfile(fullMdData)
-            return(superDfExt)
-        })
-    })
-    
-    # heatmap data input -----------------------------------------------------
+    # * heatmap data input -----------------------------------------------------
     dataHeat <- reactive({
         req(v$doPlot)
         withProgress(message = 'Creating data for plotting...', value = 0.5, {
@@ -699,10 +694,10 @@ phyloprofileLite <- function(input, output, session, hamstrOut) {
             # get selected supertaxon name
             split <- strsplit(as.character(input$inSelect), "_")
             inSelect <- as.character(split[[1]][1])
-            
             # create data for heatmap plotting
-            dataHeat <- filterProfileData(
-                DF = dataSupertaxa(),
+            filteredDf <- filterProfileData(
+                DF = getFullData(),
+                taxaCount = getCountTaxa(),
                 refTaxon = inSelect,
                 percentCutoff,
                 coorthologCutoffMax,
@@ -713,6 +708,7 @@ phyloprofileLite <- function(input, output, session, hamstrOut) {
                 groupByCat = FALSE,
                 catDt = NULL
             )
+            dataHeat <- reduceProfile(filteredDf)
             return(dataHeat)
         })
     })

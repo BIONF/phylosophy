@@ -1,6 +1,6 @@
 Package: phylosophy
-Version: 0.0.3
-Date: 2020-06-25
+Version: 0.1.0
+Date: 2020-09-25
 Title: phylosophy
 Authors@R: c(
     person("Vinh", "Tran", role = c("aut", "cre"), email = "tran@bio.uni-frankfurt.de"))
@@ -13,8 +13,7 @@ Encoding: UTF-8
 Imports:
     BiocManager, Biostrings, data.table, DT, ggplot2, grid, jsonlite, reticulate,
     shiny, shinyBS, shinyFiles, shinyjs, shinyalert, shinythemes, stringr, 
-    PhyloProfile
-RoxygenNote: 7.1.0
+    PhyloProfile (>= 1.3.0)
+RoxygenNote: 7.1.1
 Suggests: knitr, rmarkdown, testthat
 VignetteBuilder: knitr
-

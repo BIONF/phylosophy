@@ -12,18 +12,26 @@ shinyUI(
         
         # MAIN NARVARPAGE TABS -------------------------------------------------
         navbarPage(
-            em(strong("phylosophy v0.0.3")),
+            em(strong("phylosophy v0.1.0")),
             id = "tabs",
             collapsible = TRUE,
             inverse = TRUE,
             fluid = TRUE,
             position = "fixed-top",
             
-            # INTRO TAB ==========================================================
+            # INTRO TAB ========================================================
             tabPanel(
               "INTRODUCTION",
               h1("WELCOME TO PHYLOSOPHY TOOL KIT!"),
               tags$img(src="wordcloud.png")
+            ),
+            
+            # FCAT TAB =======================================================
+            tabPanel(
+                "fCAT",
+                #dccAppUI("dccApp")
+                h2("Feature-aware Completeness Assessment Tool"),
+                em("Coming soon...")
             ),
             
             # FAS TAB ==========================================================
@@ -40,28 +48,21 @@ shinyUI(
             ),
             
             # DCC TAB ==========================================================
-            navbarMenu(
-                "DCCv2",
-                tabPanel(
-                    "Get OMA data",
-                    dccDownloadOmaAppUI("dccDownloadOma")
-                ),
-                tabPanel(
-                    "DCCv2", 
-                    dccAppUI("dccApp")
-                )
+            tabPanel(
+                "dcc2",
+                dccAppUI("dccApp")
             ),
             
-            # HAMSTR TAB =======================================================
+            # FDOG TAB =======================================================
             navbarMenu(
-                "HaMStR",
+                "fDOG",
                 tabPanel(
-                    "Adding taxon to HaMStR",
-                    hamstrPrepareAppUI("hamstrPrepareApp")
+                    "Adding taxon to fDOG",
+                    fdogAddTaxaAppUI("fdogAddTaxaApp")
                 ),
                 tabPanel(
-                    "HaMStR oneSeq",
-                    hamstrAppUI("hamstrApp")
+                    "Run fDOG",
+                    fdogAppUI("fdogApp")
                 )
             ),
             
